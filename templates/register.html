@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Register | Secure Vault{% endblock %}
+{% block main_class %}auth-shell{% endblock %}
+{% block content %}
+<section class="auth-panel">
+    <h1>Create your vault</h1><p>Your master password is hashed and is never stored directly.</p>
+    <form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="username">Username</label><input id="username" name="username" minlength="3" required>
+        <label for="master_password">Master password</label><input id="master_password" name="master_password" type="password" minlength="8" required>
+        <div class="form-actions"><button type="submit">Create vault</button><a class="button secondary" href="{{ url_for('login') }}">Cancel</a></div>
+    </form>
+</section>
+{% endblock %}

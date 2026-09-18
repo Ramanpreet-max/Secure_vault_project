@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Secure Vault{% endblock %}
+{% block content %}
+<section class="form-panel">
+    <h1>{{ title }}</h1><p>Credentials are encrypted before they are written to SQLite.</p>
+    <form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <label for="site">Website or service</label><input id="site" name="site" value="{{ entry.site if entry else '' }}" required>
+        <label for="username">Username or email</label><input id="username" name="username" value="{{ entry.username if entry else '' }}" required>
+        <label for="password">Password</label>
+        <div class="password-line"><input id="password" name="password" type="password" value="{{ entry.password if entry else '' }}" required><button type="button" onclick="togglePassword()">Show</button><button type="button" onclick="generatePassword()">Generate</button></div>
+        <div class="form-actions"><button type="submit">Save credential</button><a class="button secondary" href="{{ url_for('index') }}">Cancel</a></div>
+    </form>
+</section>
+<script>
+function togglePassword() { const field = document.getElementById('password'); field.type = field.type === 'password' ? 'text' : 'password'; }
+function generatePassword() { const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*'; const values = new Uint32Array(20); crypto.getRandomValues(values); document.getElementById('password').value = Array.from(values, value => chars[value % chars.length]).join(''); }
+</script>
+{% endblock %}

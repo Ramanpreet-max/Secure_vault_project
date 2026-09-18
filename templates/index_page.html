@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Your Vault | Secure Vault{% endblock %}
+{% block content %}
+<section class="intro">
+    <div><p class="eyebrow">Private workspace</p><h1>Your vault</h1><p>Encrypted credentials, available only after you unlock them.</p></div>
+    <a class="button" href="{{ url_for('add') }}">+ Add credential</a>
+</section>
+<section class="summary">
+    <div class="stat"><strong>{{ entries|length }}</strong><span>Saved items</span></div>
+    <div class="stat"><strong>Active</strong><span>Vault status</span></div>
+</section>
+<input class="search" id="vault-search" type="search" placeholder="Search your vault..." aria-label="Search your vault">
+<section class="vault-list">
+    {% for entry in entries %}
+    <article class="vault-row" data-search="{{ entry.site }} {{ entry.username }}">
+        <div><strong>{{ entry.site }}</strong><span class="muted">{{ entry.username }}</span></div>
+        <div><span class="muted">Password</span><br><span>••••••••••</span></div>
+        <div class="actions"><a href="{{ url_for('update', entry_id=entry.id) }}">Edit</a><form class="inline" method="post" action="{{ url_for('delete', entry_id=entry.id) }}" onsubmit="return confirm('Delete this credential?');"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="danger" type="submit">Delete</button></form></div>
+    </article>
+    {% else %}
+    <div class="empty"><p>Your vault is empty.</p><a href="{{ url_for('add') }}">Add your first credential</a></div>
+    {% endfor %}
+</section>
+<script>
+document.getElementById('vault-search').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    document.querySelectorAll('.vault-row').forEach(function (row) {
+        row.hidden = !row.dataset.search.toLowerCase().includes(query);
+    });
+});
+</script>
+{% endblock %}
